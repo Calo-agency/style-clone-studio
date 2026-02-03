@@ -1,6 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 
-const gemini = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY ?? "" });
+function getGeminiClient() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is not set");
+  }
+  return new GoogleGenAI({ apiKey });
+}
 
 export async function generateStylePrompt(options: {
   userPrompt: string;
@@ -17,6 +23,7 @@ export async function generateStylePrompt(options: {
     parts.push({ inlineData: options.poseImage });
   }
 
+  const gemini = getGeminiClient();
   const response = await gemini.models.generateContent({
     model: "gemini-2.5-flash",
     contents: [{ role: "user", parts }],
@@ -26,6 +33,7 @@ export async function generateStylePrompt(options: {
 }
 
 export async function generateGeminiImage(prompt: string) {
+  const gemini = getGeminiClient();
   const response = await gemini.models.generateImages({
     model: "imagen-4.0-generate-001",
     prompt,
