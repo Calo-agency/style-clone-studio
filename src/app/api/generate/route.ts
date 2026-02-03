@@ -142,7 +142,7 @@ export async function POST(req: Request) {
       sdxlPromise,
     ]);
 
-    const openaiB64 = openaiResult.data[0]?.b64_json;
+    const openaiB64 = openaiResult?.data?.[0]?.b64_json;
     const openaiBuffer = openaiB64 ? Buffer.from(openaiB64, "base64") : null;
     const geminiBuffer = geminiImage ?? null;
 
